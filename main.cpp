@@ -175,14 +175,14 @@ public:
         int rangeTemp = 0;
         for(i; range[i]!=' '; i++)
         {
-            rangeTemp = this->intMaker(rangeTemp,range[i]);
+            rangeTemp = intMaker(rangeTemp,range[i]);
         }
         i++;
         myStor.rangTop = rangeTemp;
         rangeTemp = 0;
         for(i; i<range.length(); i++)
         {
-            rangeTemp = this->intMaker(rangeTemp,range[i]);
+            rangeTemp = intMaker(rangeTemp,range[i]);
         }
         myStor.rangLast = rangeTemp;
         if (myStor.rangTop <= myStor.rangLast)
@@ -254,7 +254,6 @@ public:
         file.open(nameOfFile);
         file.seekg(0, ios::end);
         if (!(file.is_open())) {
-            file.close();
             NumberWorker().exceptionHelper(0);
         }
         if(file.tellg() == 0) result = 1;
