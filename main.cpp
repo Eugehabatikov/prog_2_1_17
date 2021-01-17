@@ -1,39 +1,34 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <climits>
+
 using namespace std;
-//структурра хранения - стек
+
 struct Stack {//структура для ввода
     Stack *next;
     int elem = 0;
 };
-
-
-
 
 struct Sumb//структура вывода - двунаправленный список
 {
     Sumb* nexElem;// указатель на следующий элемент
     Sumb* prewElem;//указатель на предыдущее элемент
     int elem = 0; //элемент
-//    int deleted = 0; // 0 - не удалено, 1 - удалено
-}; // готово
+};
 
-struct MyStor {//структура хранения информации
+struct MyStor {
     string nameOfFile;
     int rangTop = 0;
     int rangLast = 0;
     Sumb *firstElem = NULL;
     Sumb *lastElem = NULL;
     Stack *top = NULL;
-};
+};//структура хранения информации
 
 MyStor myStor;
 class NumberWorker//основной класс
 {
 public:
-
 
     void sort()
     {
@@ -81,37 +76,15 @@ public:
                     else{
                         tempStor->nexElem->prewElem = elemTwo; // привязал следующий участок
                     }
-                   // tempStor = temp->elem;
-                    //temp->elem = prev;
-                    //temp->prewElem->elem = tempStor;
+
                     prev = elemTwo->elem;
                 }
                 else prev = temp->elem;
             }
             if(finishFlag == 0)
                 break;
-            /**else {
-                prev = myStor.lastElem->elem;
-                temp = temp->prewElem;// пропустили лишнюю проверку
-                while (temp->prewElem != NULL) {
-                    temp = temp->prewElem;
-                    if (temp->elem > prev) {
-                   //     tempStor = temp->elem;
-                        temp->elem = prev;
-                     //   temp->nexElem->elem = tempStor;
-                        finishFlag = 1;
-                    }
-                    prev = temp->elem;
-                }
-            }**/
         }
     };// метод сортировки
-
-    void cleaner(Sumb *element){
-        delete element->nexElem;
-        delete element->prewElem;
-        element->elem = NULL;
-    };
 
     void putL2(int elem, int flagLast)
     {
@@ -187,6 +160,7 @@ public:
             rangeTempNew *= 10;
             rangeTempNew += (elem - '0');
         }
+        else if (elem == ' ' || elem == '\n') exceptionHelper(1);
         else
         {
             cout << "sorry, you write not a number";
@@ -213,37 +187,23 @@ public:
         myStor.rangLast = rangeTemp;
         if (myStor.rangTop <= myStor.rangLast)
         {
+           exceptionHelper(1);
+        }
+    };
+
+    void exceptionHelper(int flag)
+    {
+        if(flag == 0)
+        {
+            cout << "Somphing error in your path to file. Pleas, write all again.";
+            exit(0);
+        }
+
+       else
+        {
             cout << "sorry, you write wrong boundaries. Pleas, check the specification again";
             exit(0);
         }
-    };//готов, отдебажен
-
-    void deleteStack() {
-        while(true)
-        {
-            if(myStor.top == NULL) break;
-            Stack *temp = myStor.top->next;
-            myStor.top->elem = NULL;
-            delete myStor.top;
-            myStor.top = temp;
-        }
-    };// очистка стека Готово
-
-    void deleteL2()
-    {
-        Sumb *temp = myStor.firstElem;
-
-        while (true)
-        {
-
-            break;
-        }
-    };// Очистка двунаправленной очереди
-
-    void exceptionHelper()
-    {
-        cout << "Somphing error in your path to file. Pleas, write all again.";
-        exit(0);
     }
 
     void printer()
@@ -265,10 +225,8 @@ public:
                 temp = temp->nexElem;
                 temp->prewElem->nexElem = nullptr;
                 temp->prewElem = nullptr;
-
             }
         }
-        else exceptionHelper();
         out.close();
     };//финальный вывод отсортированного l2 списка
 
@@ -286,45 +244,48 @@ public:
                 stackPut(stoi(line));
             }
         }
-        else exceptionHelper();
         in.close();
-    };// готов
+    };
 
-    //void writer(){};// писатель
-
-
+    int pathChecker(string nameOfFile)
+    {
+        ifstream file;
+        int result = 0;
+        file.open(nameOfFile);
+        file.seekg(0, ios::end);
+        if (!(file.is_open())) {
+            file.close();
+            NumberWorker().exceptionHelper(0);
+        }
+        if(file.tellg() == 0) result = 1;
+        file.close();
+        return result;
+    };
 };
 int main() {
     string nameOfFile;
     cout << "Hello!\n"
-            "This program can:\n";
+            "This program can will sort in ascending order and crop numbers by somphing range.\n"
+            "On the start you need take path to input file (with inform) and path to output file (where program put result).\n"
+            "On file input you need in first line put the range by pattern 'MAX MIN'(example 290 56),\n"
+            "and on the other line data (new element on new line!)\n"
+            "Example of file:\n"
+            "290 56\n"
+            "23\n"
+            "56\n"
+            "13\n"
+            "100\n"
+            "200\n"
+            "150\n"
+            "Please, take path on file input\n";
     cin >> nameOfFile; // where i take text
+    if (NumberWorker().pathChecker(nameOfFile) == 1) NumberWorker().exceptionHelper(0);
+    cout << "Please, write path to output file\n";
     cin >> myStor.nameOfFile; // where i write answer
-
+    NumberWorker().pathChecker(myStor.nameOfFile);
     NumberWorker().reader(nameOfFile);// считываю стек
     NumberWorker().moveToL2();//переношу данные в двунаправленный список
     NumberWorker().sort();//сортирую полученный список
     NumberWorker().printer();//вывожу данные в файл
     return 0;
-}// написать вступление, не забыть четко описать граничные условия;
- /** схема работы
-1) принимаем в мэйн ссылку на файл ввода и вывода, передаем данные сразу в метод чтения
-2) читаем, заполняем стек, сразу отрезаем все, не входящее в диапазон
-3) переводим в двунаправленную очередь, сортирвуем
-4) выводим в файл
-
- проверить:
- 1) некорректные данные границ
- 2) некорректное имя файла
- 3) меньшая граница больше большой
- 4) проверка граничных значений
- 5) проверка сортировки
-
-  ++
-  Если выделял внутри метода через new, то надо.
-  Если это просто переменные типа int z; то не надо.
-  Другими словами, если выделяешь память - то есть создаешь что-то, чем потом пользуешься через указатель, чистить память надо.
-
-  C:\tmp\test0.txt
-C:\tmp\output.txt
-  **/
+}
