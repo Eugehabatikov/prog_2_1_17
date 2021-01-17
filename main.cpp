@@ -132,7 +132,7 @@ public:
             newElem->elem = info;
             myStor.top = newElem;
         }
-    };// метод вставки нового элемента в стек готов
+    };// метод вставки нового элемента в стек
 
     void moveToL2()
     {
@@ -150,7 +150,7 @@ public:
             myStor.top = temp;
             if (flagFinish == 1) break;// что бы не делать лишний шаг цикла
         }
-    };//перенос данных из стека в двунаправленную очередь готово
+    };//перенос данных из стека в двунаправленную очередь
 
     int intMaker(int rangeTemp, char elem)//готов
     {
@@ -206,7 +206,7 @@ public:
         }
     }
 
-    void printer()
+        void printer()
     {
         ofstream out;               // поток для записи
         out.open(myStor.nameOfFile, ios::app);// окрываем файл для записи
